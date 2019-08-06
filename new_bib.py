@@ -82,6 +82,40 @@ for sublist in multiples_split:
 for item in flat_list:
 	IDS5.append(item)
 
+#take care of citations with page numbers---e.g. \citep[p. 23]{citationID}
+pagecitations = []
+segments = []
+##compile a list of citations with page numbers---e.g. \citep[p. 23]{citationID}--only taking the word that comes after "\citep["
+for word in words:
+	if len(word) > 7:
+		for n in range(len(word),6,-1):
+			segments.append(n)
+		for entry in segments:
+			if word[entry:entry+7] == "\citep[":
+				pindex = words.index(word)
+				pindex += 1
+				pagecitations.append(words[pindex])
+		segments = []
+
+
+##clean the citations to only include IDs 
+###change items in citations to only inlcude what comes after an open brace "{"
+for item in pagecitations:
+	iindex = pagecitations.index(item)
+	for letter in item:
+		if letter =="{":
+			lindex = item.index("{")
+			pagecitations[iindex] = item[lindex+1:]
+for item in pagecitations: ##change items in citations to only inlcude what comes before a closed brace
+	iindex = pagecitations.index(item)
+	for letter in item:
+		if letter =="}":
+			lindex = item.index("}")
+			pagecitations[iindex] = item[:lindex]
+		
+for item in pagecitations:
+	IDS5.append(item)
+	
 #remove duplicates in a list by first converting it to a dictionary, which is not supposed to allow two items with the same key
 
 temp_dict = {}
